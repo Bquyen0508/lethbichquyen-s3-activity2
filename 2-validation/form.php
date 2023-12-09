@@ -3,7 +3,6 @@
 function validate_message($message)
 {
     // function to check if message is correct (must have at least 10 caracters (after trimming))
-    // 
     $message = trim($message);
     if (strlen($message) < 10) {
         return false;
@@ -14,19 +13,19 @@ function validate_message($message)
 function validate_username($username)
 {
     // function to check if username is correct (must be alphanumeric => Use the function 'ctype_alnum()')
-    if (!ctype_alnum($username)) {
-        return false;
+    if (ctype_alnum($username)) {
+        return true;
     }
-    return true;
+    return false;
 }
 
 function validate_email($email)
 {
     // function to check if email is correct (must contain '@')
-    if (strpos($email, '@')) {
-        return true;
+    if (strpos($email, '@') == false) {
+        return false;
     }
-    return false;
+    return true;
 }
 
 
@@ -67,12 +66,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($email)) {
         $email_error = "Please enter an email";
     } elseif (validate_email($email) == false) {
-        $email = "email must contain '@'";
+        $email_error = "email must contain '@'";
     }
 
     if (!isset($_POST["terms"])) {
         $terms_error = "You must accept the Terms of Service";
     }
+
+    if ($user_error == '' && $email_error == '' && $terms_error == '' && $message_error == '') $form_valid = true;
+
 }
 
 ?>
@@ -80,16 +82,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <form action="#" method="post">
     <div class="row mb-3 mt-3">
         <div class="col">
-            <input type="text" class="form-control" placeholder="Enter Name" name="username" value="<?php if (isset($_POST["username"])) echo $username ?>">
+            <input type="text" class="form-control" placeholder="Enter Name" name="username" value="<?php echo $username ?>">
             <small class="form-text text-danger"> <?php echo $user_error; ?></small>
         </div>
         <div class="col">
-            <input type="text" class="form-control" placeholder="Enter email" name="email" value="<?php if (isset($_POST["email"])) echo $email ?>">
+            <input type="text" class="form-control" placeholder="Enter email" name="email" value="<?php echo $email ?>">
             <small class="form-text text-danger"> <?php echo $email_error; ?></small>
         </div>
     </div>
     <div class="mb-3">
-        <textarea name="message" placeholder="Enter message" class="form-control"><?php if (isset($_POST["message"])) echo $message ?></textarea>
+        <textarea name="message" placeholder="Enter message" class="form-control"><?php echo $message ?></textarea>
         <small class="form-text text-danger"> <?php echo $message_error; ?></small>
     </div>
     <div class="mb-3">
